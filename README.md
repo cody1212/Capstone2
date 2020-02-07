@@ -20,3 +20,10 @@ Looking at these heat maps one can grasp a general concept of profitability by l
 An in depth look requires some features being split into sub groups to more accurately evaluate their relation to other features.  This example shows (like all pricing subgroups) a majority of properties being rented for over $200 have very high availability, and therefore, low occupancy over the next 90 day period.  While still many properties in the lower price ranges (of this >$200 subgroup) have a high occupancy as well.  Most interesting is the surprisingly high number of properties in the $1000 price range having significant occupancy numbers over the next 90 days, in fact, more occupancy than not!
 
 ![joint_plots_by_price_bin](https://github.com/cody1212/Capstone2/blob/master/images/joint_plots_and_count_histograms.png)
+
+Next the prices and occupancy are looked at from a more zoomed in level taking into account the first the area then the zipcode.
+
+![area_box_plots_by_price](https://github.com/cody1212/Capstone2/blob/master/images/price_by_area_box_plot.png)
+![area_box_plots_by_occupancy](https://github.com/cody1212/Capstone2/blob/master/images/reservations_by_area_box_plot.png)
+![zip_price](https://github.com/cody1212/Capstone2/blob/master/images/price_zips.png)
+![zip_occupancy](https://github.com/cody1212/Capstone2/blob/master/images/occupancy_zips.png)
