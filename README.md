@@ -33,7 +33,7 @@ Next the prices and occupancy are looked at from a more zoomed in level, taking 
 ![area_box_plots_by_occupancy](https://github.com/cody1212/Capstone2/blob/master/images/reservations_by_area_box_plot.png)
 ![zip_price](https://github.com/cody1212/Capstone2/blob/master/images/price_zips.png)
 ![zip_occupancy](https://github.com/cody1212/Capstone2/blob/master/images/occupancy_zips.png)
-![zip_cleaning_fee](https://github.com/cody1212/Capstone2/blob/master/images/cleaning_fee_by_zipcode.png)
+![zip_cleaning_fee](https://github.com/cody1212/Capstone2/blob/master/images/zipcode_cleaning.png)
 
 Finally, a Random Forest Regression is conducted to investigate how well a machine learning model can predict housing prices when trained on this data, as well as, provide some insight into what features can descibe the largerst percentage of the variance in the prices the model predicts and the actual prices of the listings.  This shows the unanimous greatest feature importance score goes to cleaning fee, consistently followed by number of bathrooms, with a fluctuating mix of bedrooms, 365_day availability, location, security deposit and housing type.  Since, RFs are not deterministic, the feature importances do change each time the model is run indicated by the varied tables below.  The most surprising maybe of those results is the type of housing was not given a greater feature importance.  
 
