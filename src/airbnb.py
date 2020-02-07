@@ -201,7 +201,7 @@ roomtypes = {}
 for typ in houses_df.room_type.unique():
     cnt = len(houses_df[houses_df.room_type==typ])
     roomtypes.update({typ:cnt})
-sns.jointplot(x="reserved_90", y='cleaning_fee', kind="kde", data=df, xlim=(0,90),ylim=(0,400),color='orange')
+sns.catplot(x="zipcode", y='cleaning_fee', kind="boxen", data=df)
 plt.show()
 # print(roomtypes)
 # print(z_df.T)
