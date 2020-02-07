@@ -1,2 +1,3 @@
-a = [0,1,2,3]
-print(a.index(24))
+a = [0,8,2,3]
+for i, j in enumerate(a):
+    print(j)

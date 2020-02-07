@@ -202,7 +202,7 @@ for typ in houses_df.room_type.unique():
     cnt = len(houses_df[houses_df.room_type==typ])
     roomtypes.update({typ:cnt})
 sns.catplot(x="zipcode", y='cleaning_fee', kind="boxen", data=df)
-plt.show()
+# plt.show()
 # print(roomtypes)
 # print(z_df.T)
 # # print(means)
@@ -335,13 +335,29 @@ n_neighbors = 3
 # plt.tight_layout()
 # plt.show()
 # first = zc_dict.get('80212')
-# l1=np.array(first['latitude'])
-# l2=np.array(first['longitude'])
 
 
 from geopy.distance import distance
-# dist = int(distance(reversed((l1[0],l2[0])),reversed((l1[1],l2[1]))).m)
-# print(l1[:2],l2[:2])
+l1=df.latitude.tolist()
+l2=df.longitude.tolist()
+dists = {}
+for i,j in enumerate(l1):
+    each_dist=[]
+    for g in range(1,len(l1)):
+        dist = int(distance((j,l2[i]),(l1[g],l2[g])).m)
+        each_dist.append((dist,g))
+        # print(each_dist)
+    dists.update({i:np.array(sorted(each_dist))[1:4]})
+    print(dists)
+import pickle
+
+with open('dists.pickle', 'wb') as handle:
+    pickle.dump(dists, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+with open('dists.pickle', 'rb') as handle:
+    b = pickle.load(handle)
+
+print(dists==b)
 # print(dist)
 # print(lls )
 # dist = {}
