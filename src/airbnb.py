@@ -96,7 +96,7 @@ fig,ax = plt.subplots(2,3,figsize=(12,6))
 
 def mk_hist(df):
     cnter = 0
-    for i in df.price_bin.unique():
+    for i in ['under_100','100_200','200_or_more']:
         i = df[(df.price_bin == i)&(df.price<2000)]
         g = sns.jointplot(i.log_price,i.reserved_90,kind='kde',color='green',space=1,ax=ax[0][cnter])
         i.hist('price', bins=20, color='maroon',ax=ax[1][cnter])
