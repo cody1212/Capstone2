@@ -23,18 +23,19 @@ pri = df.price.tolist()
 lat_long_df = pd.DataFrame()
 lat_long_df['latitude']=df['latitude']
 lat_long_df['longitude']=df['longitude']
+
 X = lat_long_df
-X = X.fillna(0)
-print(len(X))
-y = pri
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
-print()
-model = sm.OLS(pri, X)
-results = model.fit()
-model.predict(model)
-print(results.summary())
-pri = pri.fillna(0)
-print(len(pri))
+# X = X.fillna(0)
+# print(len(X))
+# y = pri
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+# print()
+# model = sm.OLS(pri, X)
+# results = model.fit()
+# model.predict(model)
+# print(results.summary())
+# pri = pri.fillna(0)
+# print(len(pri))
 df = df[df.price<2000]
 # del df['price']
 # p_type = df['property_type']
@@ -157,13 +158,13 @@ X = lat_long_df
 X = X.fillna(0)
 print(len(X))
 y = pri
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 # p_small = p[p <= 500]
 
-model = sm.OLS(pri, X)
-results = model.fit()
-model.predict(model)
-print(results.summary())
+# model = sm.OLS(pri, X)
+# results = model.fit()
+# model.predict(model)
+# print(results.summary())
 zips = df['zipcode'].unique()
 zc_dict = {}
 
@@ -200,6 +201,8 @@ roomtypes = {}
 for typ in houses_df.room_type.unique():
     cnt = len(houses_df[houses_df.room_type==typ])
     roomtypes.update({typ:cnt})
+sns.jointplot(x="reserved_90", y='cleaning_fee', kind="kde", data=df, xlim=(0,90),ylim=(0,400),color='orange')
+plt.show()
 # print(roomtypes)
 # print(z_df.T)
 # # print(means)
@@ -292,11 +295,11 @@ print(imp_feats)
 # print(housing_group)
 
 # p_small = p[p <= 500]
-model = sm.OLS(pri, df2)
-
-results = model.fit()
-model.predict(model)
-print(results.summary())
+# model = sm.OLS(pri, df2)
+#
+# results = model.fit()
+# model.predict(model)
+# print(results.summary())
 
 y = df.pop('price').values
 x1 = df.latitude.tolist()
@@ -316,26 +319,25 @@ X_train, X_test, y_train, y_test = train_test_split(X, y)
 # # #############################################################################
 # # Fit regression model
 n_neighbors = 3
-from sklearn.neighbors import KNeighborsRegressor as KNR
-nn = KNR(3)
-nn.fit(X_train,y_train)
-x = nn.predict(X_test)
-print(len(X_train),len(y_train))
-
-
-plt.scatter(X_train, y_train, color='darkorange', label='data')
-plt.plot(X_test, x, color='navy', label='prediction')
-plt.axis('tight')
-plt.legend()
-plt.title("KNeighborsRegressor")
+# from sklearn.neighbors import KNeighborsRegressor as KNR
+# nn = KNR(3)
+# nn.fit(X_train,y_train)
+# x = nn.predict(X_test)
+# print(len(X_train),len(y_train))
 #
-plt.tight_layout()
-plt.show()
+#
+# plt.scatter(X_train, y_train, color='darkorange', label='data')
+# plt.plot(X_test, x, color='navy', label='prediction')
+# plt.axis('tight')
+# plt.legend()
+# plt.title("KNeighborsRegressor")
+#
+# plt.tight_layout()
+# plt.show()
 # first = zc_dict.get('80212')
 # l1=np.array(first['latitude'])
 # l2=np.array(first['longitude'])
 
-plt.show()
 
 from geopy.distance import distance
 # dist = int(distance(reversed((l1[0],l2[0])),reversed((l1[1],l2[1]))).m)
