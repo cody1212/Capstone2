@@ -19,7 +19,22 @@ df = pd.read_csv('../data/denverairbnb/listings.csv')
 df = df.filter(items=['availability_30','availability_60','availability_90','availability_365',
                       'price','cleaning_fee','security_deposit','accomodates','bedrooms',
                       'bathrooms','property_type','room_type','latitude','longitude','zipcode'])
-pri = df['price'].astype(float)
+pri = df.price.tolist()
+lat_long_df = pd.DataFrame()
+lat_long_df['latitude']=df['latitude']
+lat_long_df['longitude']=df['longitude']
+X = lat_long_df
+X = X.fillna(0)
+print(len(X))
+y = pri
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+print()
+model = sm.OLS(pri, X)
+results = model.fit()
+model.predict(model)
+print(results.summary())
+pri = pri.fillna(0)
+print(len(pri))
 df = df[df.price<2000]
 # del df['price']
 # p_type = df['property_type']
@@ -79,7 +94,7 @@ o2 =df[df['price_bin']=='200_or_more']
 for area in df.areas.unique():
     area_dfs.update({area:df[df.areas==area]})
 # print(area_dfs)
-print(df.room_type.unique())
+# print(df.room_type.unique())
 
 
 # under_1.hist('areas')
@@ -125,7 +140,7 @@ def select_df(df,feature,value,feature2=None):
     df=df[df[feature]==value]
     return df
 
-print(select_df(o2,'property_type','Tent'))
+# print(select_df(o2,'property_type','Tent'))
 plt.style.use('ggplot')
 # pd.plotting.scatter_matrix(df, alpha=0.2, figsize=(10, 10), diagonal='kde',range_padding=.2)
 # plt.xticks(rotation=90)
@@ -138,14 +153,17 @@ df1 = df1[(df1.price<200)&(df1.price>100)&(df1.availability_60 !=0)]
 lat_long_df = pd.DataFrame()
 lat_long_df['latitude']=df['latitude']
 lat_long_df['longitude']=df['longitude']
-# X = lat_long_df
-# y = pri
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+X = lat_long_df
+X = X.fillna(0)
+print(len(X))
+y = pri
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 # p_small = p[p <= 500]
-# model = sm.OLS(pri, X)
-# results = model.fit()
-# model.predict(model)
-# print(results.summary())
+
+model = sm.OLS(pri, X)
+results = model.fit()
+model.predict(model)
+print(results.summary())
 zips = df['zipcode'].unique()
 zc_dict = {}
 
@@ -182,13 +200,13 @@ roomtypes = {}
 for typ in houses_df.room_type.unique():
     cnt = len(houses_df[houses_df.room_type==typ])
     roomtypes.update({typ:cnt})
-print(roomtypes)
+# print(roomtypes)
 # print(z_df.T)
 # # print(means)
 # # print(num_listings)
 # print(zc_dict.get('80212')['price'])
 
-print(df.property_type.unique())
+# print(df.property_type.unique())
 sdu = ['Guesthouse' ,'House','Cottage' ,
           'Bungalow','Bed and breakfast' ,
           'Castle','Villa','Earth house']
@@ -228,7 +246,7 @@ for i in feats:
     fname = str(i)
     plt.savefig(fname,dpi=300)
 plt.tight_layout(pad=3)
-plt.show()
+# plt.show()
 
 
 from sklearn.ensemble import RandomForestRegressor as RFR
@@ -239,7 +257,7 @@ df2 = df.filter(items=['availability_30', 'availability_60', 'availability_90', 
                       'bathrooms', 'property_type', 'room_type', 'latitude', 'longitude', 'zipcode','housing_type'])
 df2 =df2.fillna(0)
 df2 = pd.get_dummies(df2)
-print(df2.head(10))
+# print(df2.head(10))
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as mse
 import pandas as pd
@@ -272,12 +290,52 @@ print(imp_feats)
 # y = np.array(x)[idx]
 
 # print(housing_group)
-#     knn = KNNRegressor(5)
 
-first = zc_dict.get('80212')
-l1=np.array(first['latitude'])
-l2=np.array(first['longitude'])
-# plt.show()
+# p_small = p[p <= 500]
+model = sm.OLS(pri, df2)
+
+results = model.fit()
+model.predict(model)
+print(results.summary())
+
+y = df.pop('price').values
+x1 = df.latitude.tolist()
+x2 =df.longitude.tolist()
+near_df = pd.DataFrame()
+near_df['x1']=x1
+near_df['x2']=x2
+
+# print(x1,near_df)
+X = near_df.values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+# Add noise to targets
+# y[::5] += 1 * (0.5 - np.random.rand(8))
+#
+# # #############################################################################
+# # Fit regression model
+n_neighbors = 3
+from sklearn.neighbors import KNeighborsRegressor as KNR
+nn = KNR(3)
+nn.fit(X_train,y_train)
+x = nn.predict(X_test)
+print(len(X_train),len(y_train))
+
+
+plt.scatter(X_train, y_train, color='darkorange', label='data')
+plt.plot(X_test, x, color='navy', label='prediction')
+plt.axis('tight')
+plt.legend()
+plt.title("KNeighborsRegressor")
+#
+plt.tight_layout()
+plt.show()
+# first = zc_dict.get('80212')
+# l1=np.array(first['latitude'])
+# l2=np.array(first['longitude'])
+
+plt.show()
 
 from geopy.distance import distance
 # dist = int(distance(reversed((l1[0],l2[0])),reversed((l1[1],l2[1]))).m)
