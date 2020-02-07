@@ -51,5 +51,5 @@ Another couple other Random Forest Regression analysis was done by removing the 
 
 ![rf](https://github.com/cody1212/Capstone2/blob/master/images/RF.png)
 ![tent_guy](https://github.com/cody1212/Capstone2/blob/master/images/tent_guy.png)
-
+![tent](https://github.com/cody1212/Capstone2/blob/master/images/Tent.png)
 
