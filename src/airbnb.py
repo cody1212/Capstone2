@@ -92,14 +92,24 @@ print(df.room_type.unique())
 # b1_2.hist('bedrooms')
 
 # o2.hist('property_type',color='orange')
-# fig,ax = plt.subplots(1,3)
+fig,ax = plt.subplots(2,3,figsize=(12,6))
+
 def mk_hist(df):
+    cnter = 0
     for i in df.price_bin.unique():
         i = df[(df.price_bin == i)&(df.price<2000)]
-        g = sns.jointplot(i.log_price,i.reserved_90,kind='kde',color='green',space=1)
-        i.hist('price', bins=20, color='maroon')
+        g = sns.jointplot(i.log_price,i.reserved_90,kind='kde',color='green',space=1,ax=ax[0][cnter])
+        i.hist('price', bins=20, color='maroon',ax=ax[1][cnter])
+        cnter+=1
+
         # plt.savefig(f"{i}",format='png',dpi=300)
 mk_hist(df)
+for i in range(3):
+    ax[0][i].set_ylabel("reserved_within_90_days")
+    ax[0][i].set_xlabel("log_price")
+    ax[1][i].set_ylabel("counts")
+    ax[1][i].set_xlabel('price')
+    ax[1][i].set_title("")
 
 # sns.set('10^x')
 # df['avail']=df['availability_365']-365
@@ -366,7 +376,8 @@ for i in feats:
     sns.catplot(x="areas", y=i, kind="boxen", data=df) #save this and resereved 90
     fname = str(i)
     plt.savefig(fname,dpi=300)
-# plt.show()
+plt.tight_layout(pad=3)
+plt.show()
 
 
 from sklearn.ensemble import RandomForestRegressor as RFR
