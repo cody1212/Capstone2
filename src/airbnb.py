@@ -93,13 +93,14 @@ print(df.room_type.unique())
 
 # o2.hist('property_type',color='orange')
 # fig,ax = plt.subplots(1,3)
-# def mk_hist(df):
-#     for i in df.price_bin.unique():
-#         i = df[(df.price_bin == i)&(df.price<2000)]
-#         g = sns.jointplot(i.log_price,i.reserved_90,kind='kde',color='green',space=1)
-#         i.hist('price', bins=20, color='maroon')
-# mk_hist(df)
-plt.show()
+def mk_hist(df):
+    for i in df.price_bin.unique():
+        i = df[(df.price_bin == i)&(df.price<2000)]
+        g = sns.jointplot(i.log_price,i.reserved_90,kind='kde',color='green',space=1)
+        i.hist('price', bins=20, color='maroon')
+        # plt.savefig(f"{i}",format='png',dpi=300)
+mk_hist(df)
+
 # sns.set('10^x')
 # df['avail']=df['availability_365']-365
 # sns.catplot(x="price_bin", y="reserved_90", kind="box", data=df)
@@ -356,15 +357,109 @@ def weights(avail_90,weight):
     # weight=float(weight)
     return avail_90*weight
 df = df[(df.availability_90!=0)]
-ws = np.array(df.w_avail.astype(float))/np.array(df.reserved_90.astype(float))
+
+# ws = np.array(df.w_avail.astype(float))/np.array(df.reserved_90.astype(float))
 # df['ws']=df.apply(lambda x: '%.2f' % weights(float(x[2]),float(x[23])),axis=1)
-df['ws']=ws
-sns.catplot(x="ar_means", y='reserved_90', kind="boxen", data=df) #save this and resereved 90
-print(df.head(1000))
+# df['ws']=ws
+feats=['reserved_90','log_price']
+for i in feats:
+    sns.catplot(x="areas", y=i, kind="boxen", data=df) #save this and resereved 90
+    # plt.savefig(f"{i}",format=png,dpi=300)
 plt.show()
+from DecisionTree import DecisionTree
+import numpy as np
+from collections import Counter
+
+
+class RandomForest(object):
+    '''A Random Forest class'''
+
+    def __init__(self, num_trees, num_features):
+        '''
+           num_trees:  number of trees to create in the forest:
+        num_features:  the number of features to consider when choosing the
+                           best split for each node of the decision trees
+        '''
+        self.num_trees = num_trees
+        self.num_features = num_features
+        self.forest = None
+
+    def fit(self, X, y):
+        '''
+        X:  two dimensional numpy array representing feature matrix
+                for test data
+        y:  numpy array representing labels for test data
+        '''
+        self.forest = self.build_forest(X, y, self.num_trees,
+                                        self.num_features)
+
+    def build_forest(self, X, y, num_trees, num_features):
+        '''
+        Return a list of num_trees DecisionTrees.
+        '''
+        forest = []
+        for i in range(num_trees):
+            sample_indices = np.random.choice(X.shape[0], X.shape[0],
+                                              replace=True)
+            sample_X = np.array(X[sample_indices])
+            sample_y = np.array(y[sample_indices])
+            dt = DecisionTree(num_features=self.num_features)
+            dt.fit(sample_X, sample_y)
+            forest.append(dt)
+        return forest
+
+    def predict(self, X):
+        '''
+        Return a numpy array of the labels predicted for the given test data.
+        '''
+        answers = np.array([tree.predict(X) for tree in self.forest]).T
+        return np.array([Counter(row).most_common(1)[0][0] for row in answers])
+
+    def score(self, X, y):
+        '''
+        Return the accuracy of the Random Forest for the given test data and
+        labels.
+        '''
+        return (self.predict(X) == y).mean()
+
+from sklearn.ensemble import RandomForestRegressor as RFR
+
+
+if __name__ == '__main__':
+    df2 = df.filter(items=['availability_30', 'availability_60', 'availability_90', 'availability_365',
+                          'price', 'cleaning_fee', 'security_deposit', 'accomodates', 'bedrooms',
+                          'bathrooms', 'property_type', 'room_type', 'latitude', 'longitude', 'zipcode','housing_type'])
+    df2 =df2.fillna(0)
+    df2 = pd.get_dummies(df2)
+    print(df2.head(10))
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_squared_error as mse
+    import pandas as pd
+
+    y = df2.pop('price').values
+    X = df2.values
+    X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+    rf = RFR(n_estimators=500)
+    rf.fit(X_train, y_train)
+    print('rmse:',np.sqrt(mse(y_test,rf.predict(X_test))))
+    print("Random Forest score:", rf.score(X_test, y_test))
+    imp =  (rf.feature_importances_)
+    ord = np.argsort(rf.feature_importances_)[::-1]
+    _cols = df2.columns.tolist()
+    imp_cols = ord[:6]
+    feats = []
+    for i in range(len(imp_cols)):
+        for j in _cols:
+            if _cols.index(j) == imp_cols[i]:
+                feats.append(j)
+    print(feats)
+    print(sorted(imp,reverse=True)[:6])
+    # x = np.array(df.columns.tolist())[idx]
+    # y = np.array(x)[idx]
 
 # print(housing_group)
-knn = KNNRegressor(5)
+    knn = KNNRegressor(5)
 
 first = zc_dict.get('80212')
 l1=np.array(first['latitude'])
