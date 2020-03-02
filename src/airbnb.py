@@ -34,7 +34,7 @@ pd.set_option("display.max_columns",12000)
 pd.set_option('display.max_rows',200000)
 pd.set_option('display.width', 500)
 
-dista=pd.read_csv('distances_df.csv')
+dista=pd.read_csv('../data/distances_df.csv')
 dista = dista.rename(columns={'Unnamed: 0': 'ind'})
 
 df = pd.read_csv('../data/denverairbnb/listings.csv')
@@ -49,10 +49,6 @@ df = df.filter(items=['summary','description','neighborhood_overview','availabil
 df['price_bin']=pd.cut(df['price'],[0,100,200,max(df['price'])],labels=['under_100','100_200','200_or_more']).astype(str)
 df['Log_Price']=np.log10(df.price)
 types= list(df.property_type.unique())
-
-def select_df(df,feature,value,feature2=None):
-    df=df[df[feature]==value]
-    return df
 
 def mk_area(z):
     s='non'
@@ -79,26 +75,7 @@ def mk_graphs(df):
         sns.jointplot(i.price,i.Complement_of_Availability_Next_90_Days,kind='kde',color='darkblue',space=1,ax=ax[0][cnter])
         i.hist('price', bins=20, color='maroon',ax=ax[1][cnter])
         cnter+=1
-        # plt.savefig(f"{i}",format='png',dpi=300)
-def get_addy_info(x,y,f):
-   geolocator = Nominatim(user_agent=str(f))
-   location = geolocator.reverse((x,y))
-   return location.address
-
-def plot_feat_imp(idx, features, feat_importances, n=6, fname='images/test.jpeg'):
-    '''
-    Plot the top n features.
-    '''
-    idx = idx[::-1]
-    labels = np.array(features)[idx[:n]]
-    fig, ax = plt.subplots(1, 1, figsize=(10, 5))
-    ax.barh(range(n), feat_importances[idx[:n]], color='darkblue', alpha=0.85)
-    # ax.set_xticklabels(labels)
-    ax.set_title('Overall Feature Importances')
-    plt.yticks(ticks=range(n), labels=labels)
-    plt.tight_layout(pad=1)
-    plt.savefig(fname)
-    plt.close()
+        plt.savefig(f"{i}",format='png',dpi=300)
 
 def rand_for(df):
     df2 = df.filter(items=[
@@ -154,6 +131,31 @@ def rand_for(df):
     #     model.predict(X_test,y_test)
     #     print(results.summary())
     return (imp_cols,_cols,imp,imp_feats,rf_rmse,rf_score)
+
+def get_addy_info(x,y,f):
+   geolocator = Nominatim(user_agent=str(f))
+   location = geolocator.reverse((x,y))
+   return location.address
+
+def plot_feat_imp(idx, features, feat_importances, n=6, fname='images/test.jpeg'):
+    '''
+    Plot the top n features.
+    '''
+    idx = idx[::-1]
+    labels = np.array(features)[idx[:n]]
+    fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+    ax.barh(range(n), feat_importances[idx[:n]], color='darkblue', alpha=0.85)
+    # ax.set_xticklabels(labels)
+    ax.set_title('Overall Feature Importances')
+    plt.yticks(ticks=range(n), labels=labels)
+    plt.tight_layout(pad=1)
+    plt.savefig(fname)
+    plt.close()
+
+def select_df(df,feature,value,feature2=None):
+    df=df[df[feature]==value]
+    return df
+
 def deep_search_sample(df):
     '''
     storing zillowAPIdataset into a csv file
@@ -317,7 +319,7 @@ X = lat_long_df
 # df['desc_len'] = df.description.apply(lambda x: len(str(x)))
 print(df.head())
 # print(df['desc_len'])
-df = pd.read_csv('checkout.csv')
+df = pd.read_csv('../data/checkout.csv')
 del df['Unnamed: 0']
 # sns.catplot(x="desc_len", y='price', kind="boxen", data=df)
 # plt.show()
@@ -576,7 +578,7 @@ print(df2.head(),len(df2))
 # #          'west':['80228','80232','80226','80214','80215'],
 # #          'northwest':['80033','80212','80211','80221'],'north':'80216'}
 
-address_df = pd.read_csv('all_adds.csv')
+address_df = pd.read_csv('../data/all_adds.csv')
 address_df['is_address']=address_df.address.apply(lambda x: 1 if str(x).split(',')[0].isnumeric() else 0)
 address_df = address_df[address_df.is_address==1]
 del address_df['is_address']
@@ -607,14 +609,14 @@ x,y = 100,101
 print(address_df[x:y])
 # x = deep_search_sample(address_df[2000:len(address_df)])
 # print(x)
-prop_cost_df=pd.read_csv('property_cost.csv')
-p2 = pd.read_csv('property_cost2.csv')
+prop_cost_df=pd.read_csv('../data/property_cost.csv')
+p2 = pd.read_csv('../data/property_cost2.csv')
 prop_cost_df.append(p2)
 prop_cost_df=prop_cost_df.fillna(0)
 print(prop_cost_df.head())
 print(len(prop_cost_df[prop_cost_df.amount!=0]))
 # prop_cost_df[prop_cost_df.amount!=0].to_csv('prop_cost.csv')
-prop_cost_df = pd.read_csv('prop_cost.csv')
+prop_cost_df = pd.read_csv('../data/prop_cost.csv')
 prop_cost_df = prop_cost_df.filter(items=['amount','address'])
 address_df = pd.merge(prop_cost_df,address_df,how='left',on=['address'])
 address_df = address_df.filter(items=['amount','latitude','longitude'])
@@ -679,6 +681,6 @@ plot_feat_imp(mod[0],mod[1],mod[2],fname='feature importances plot')
 #     ax[1][i].set_xlabel('Price')
 #     ax[1][i].set_title("")
 
-# plt.show()
+plt.show()
 # df['cost_bin']=pd.cut(df['amount'],[0,436115,744835,max(df.amount)],labels=['low','medium','high']).astype(str)
 # by(by=['areas','cost_bin']).agg({'cost_bin':'count'})
