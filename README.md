@@ -3,7 +3,7 @@
 
 The objective is to evaluate the possibility of predicting how much profit an Airbnb property will produce given several features, primarily its location.  Essentially, if someone would like to purchase a house to rent out on Airbnb what areas are likely to have low vacancy coupled with,  what is the maximum price they're able to charge in that area.  To investigate the features most likely to be predictors of price and occupancy, many comparisons of the features and subgroups of the features are taken into consideration.
 
-First, the a heat map of the density of listings is created.  The darker color indicates higher density:
+First, the a heat map of the density of listings is created.  The green color indicates higher density:
 
 ![density_heat_map](https://github.com/cody1212/Capstone2/blob/master/images/density_heat_map.png)
 
